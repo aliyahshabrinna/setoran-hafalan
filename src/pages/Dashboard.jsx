@@ -7,6 +7,7 @@ import {
   getUserInfo, // Tambahan API
 } from "../services/api";
 import "../index.css";
+import swal from 'sweetalert';
 
 function Dashboard({ token, setToken }) {
   const [nim, setNim] = useState("");
@@ -81,28 +82,33 @@ function Dashboard({ token, setToken }) {
   // ========================
   const handleCari = async (nimParam) => {
     const nimFix = nimParam || nim;
-    if (!nimFix) return alert("Masukkan NIM");
+    if (!nimFix) return swal("Peringatan", "Masukkan NIM terlebih dahulu", "warning");
 
     setLoading(true);
     setError("");
 
     try {
       const res = await cariMahasiswa(token, nimFix);
+      
+      // Jika res?.response bernilai false, artinya API mengirim error (misal: NIM tidak ada)
       if (res?.response) {
         setData(res.data);
         setShowPA(false);
       } else {
+        // Tampilkan pesan error spesifik dari API
+        swal("Tidak Ditemukan", res.message || "Data mahasiswa tidak ada", "error");
         setError(res.message);
       }
-    } catch {
+    } catch (err) {
+      swal("Error", "Gagal mengambil data dari server", "error");
       setError("Gagal mengambil data");
     } finally {
       setLoading(false);
     }
-  };
+};
 
   // ========================
-  // TAMBAH (VERSI FIXED KAMU)
+  // TAMBAH 
   // ========================
   const handleTambah = async () => {
     const targetNim = data?.info?.nim || nim;
@@ -139,7 +145,7 @@ function Dashboard({ token, setToken }) {
   };
 
   // ========================
-  // DELETE (VERSI FIXED KAMU)
+  // DELETE 
   // ========================
   const handleDelete = async (item) => {
     const targetNim = data?.info?.nim || nim;
