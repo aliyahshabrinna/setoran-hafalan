@@ -110,13 +110,13 @@ function Dashboard({ token, setToken }) {
   // ========================
   // TAMBAH 
   // ========================
-  const handleTambah = async () => {
+const handleTambah = async () => {
     const targetNim = data?.info?.nim || nim;
-    if (!targetNim) return alert("Pilih mahasiswa terlebih dahulu");
-    if (!keterangan) return alert("Pilih surah");
+    if (!targetNim) return swal("Peringatan", "Pilih mahasiswa terlebih dahulu", "warning");
+    if (!keterangan) return swal("Peringatan", "Pilih surah terlebih dahulu", "warning");
 
     const selected = listSurah.find((s) => s.id === keterangan);
-    if (!selected) return alert("Surah tidak valid");
+    if (!selected) return swal("Error", "Surah tidak valid", "error");
 
     const payload = {
       data_setoran: [
@@ -132,28 +132,40 @@ function Dashboard({ token, setToken }) {
       const res = await simpanSetoran(token, targetNim, payload);
       if (res?.response) {
         setKeterangan("");
-        alert("Berhasil menambah setoran");
+        // Notifikasi Sukses
+        swal("Berhasil!", "Setoran hafalan telah diverifikasi", "success");
         await handleCari(targetNim);
       } else {
-        alert(res.message || "Gagal menyimpan");
+        // Notifikasi Gagal dari Respon API
+        swal("Gagal", res.message || "Gagal menyimpan data", "error");
       }
     } catch (err) {
-      alert("Error server saat menambah data");
+      // Notifikasi Error Server
+      swal("Error", "Terjadi kesalahan server saat menambah data", "error");
     } finally {
       setLoading(false);
     }
   };
-
   // ========================
   // DELETE 
   // ========================
   const handleDelete = async (item) => {
     const targetNim = data?.info?.nim || nim;
-    if (!confirm(`Hapus setoran ${item.nama}?`)) return;
+
+    // SweetAlert Konfirmasi Hapus
+    const yakin = await swal({
+      title: "Apakah Anda yakin?",
+      text: `Setoran surah ${item.nama} akan dihapus!`,
+      icon: "warning",
+      buttons: ["Batal", "Ya, Hapus!"],
+      dangerMode: true,
+    });
+
+    if (!yakin) return;
 
     const realId = item?.info_setoran?.id; 
     if (!item.sudah_setor || !realId) {
-      return alert("Data ini memang belum disetor atau ID tidak ditemukan");
+      return swal("Gagal", "Data ini memang belum disetor atau ID tidak ditemukan", "error");
     }
 
     const payload = {
@@ -170,13 +182,13 @@ function Dashboard({ token, setToken }) {
       setLoading(true);
       const res = await deleteSetoran(token, targetNim, payload);
       if (res?.response) {
-        alert("Setoran berhasil dihapus");
+        swal("Berhasil!", "Setoran telah dihapus", "success");
         await handleCari(targetNim);
       } else {
-        alert(res.message || "Gagal menghapus");
+        swal("Gagal", res.message || "Gagal menghapus", "error");
       }
     } catch (err) {
-      alert("Error server saat menghapus data");
+      swal("Error", "Error server saat menghapus data", "error");
     } finally {
       setLoading(false);
     }
