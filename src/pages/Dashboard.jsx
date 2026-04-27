@@ -334,14 +334,20 @@ const handleTambah = async () => {
                   <thead className="table-light">
                     <tr>
                       <th className="ps-4">NAMA SURAH</th>
+                      <th className="text-center">NAMA</th>
                       <th className="text-center">STATUS</th>
                       <th className="text-center">AKSI</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
                     {data.setoran.detail.map((item) => (
+                      
                       <tr key={item.id} className={item.sudah_setor ? "table-success align-middle" : "align-middle"}>
                         <td className="ps-4 fw-bold text-dark">{item.nama}</td>
+
+                        <td className="fw-bold mb-1 text-dark">{data.info.nama}</td>
+                  
                         <td className="text-center">
                           <span className={`badge px-3 py-2 rounded-pill ${item.sudah_setor ? 'bg-success' : 'bg-secondary'}`}>
                             {item.sudah_setor ? "TERVERIFIKASI" : "BELUM SETOR"}
