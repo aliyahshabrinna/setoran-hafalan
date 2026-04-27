@@ -274,6 +274,10 @@ const handleTambah = async () => {
                   <div className="card p-3 h-100 text-center shadow-sm hover-card border-0 bg-light">
                     <h6 className="fw-bold mb-1">{mhs.nama}</h6>
                     <small className="text-muted mb-2 d-block">{mhs.nim}</small>
+                    <div className="d-flex justify-content-between mt-2">
+                    <span className="badge bg-success">Semester {mhs.semester || '-'}</span>
+                    <span className="badge bg-secondary">Angkatan {mhs.angkatan || mhs.tahun_masuk || '-'}</span>
+                    </div>
                     <button className="btn btn-success btn-sm w-100" onClick={() => handleCari(mhs.nim)}>
                       Detail Hafalan
                     </button>
